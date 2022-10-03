@@ -1,58 +1,205 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="table-center">
+    <select v-model="selectedItem">
+      <option v-for="title in titles.slice(1, titles.length)" :key="title.id">
+        {{ title.name }}
+      </option>
+    </select>
+    <select v-model="selectedType">
+      <option v-for="sortType in sortTypes" :key="sortType.id">
+        {{ sortType.name }}
+      </option>
+    </select>
+    <input v-model="num" @input="sortByMore" type="number" />
+    <table class="table-border">
+      <thead class="table-border">
+        <th class="table-border" v-for="title in titles" :key="title.id">
+          {{ title.name }}
+        </th>
+      </thead>
+      <tbody>
+        <tr class="table-border" v-for="elem in pagination" :key="elem.id">
+          <td>
+            <div>{{ elem.date }}</div>
+          </td>
+          <td>
+            <div>{{ elem.name }}</div>
+          </td>
+          <td>
+            <div>{{ elem.count }}</div>
+          </td>
+          <td>
+            <div>{{ elem.distance }}</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button
+      @click="changePage(page)"
+      class="btn"
+      v-for="page in pages"
+      :key="page"
+      :class="{ btnActive: page === pageNumber }"
+    >
+      {{ page }}
+    </button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
+  name: "HelloWorld",
+  data() {
+    return {
+      titles: [
+        { name: "Дата", id: 1 },
+        { name: "Название", id: 2 },
+        { name: "Количество", id: 3 },
+        { name: "Расстояние", id: 4 },
+      ],
+      sortTypes: [
+        { name: "Равно", id: 1 },
+        { name: "Больше", id: 2 },
+        { name: "Меньше", id: 3 },
+        { name: "Содержит", id: 4 },
+      ],
+      data: [
+        { date: "2022.10.03", name: "fff", count: 3, distance: 4564, id: 1 },
+        { date: "2022.10.03", name: "faa", count: 4, distance: 3556, id: 2 },
+        { date: "2022.10.03", name: "sasa", count: 23, distance: 345, id: 3 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        {
+          date: "2022.10.03",
+          name: "sads",
+          count: 244,
+          distance: 300,
+          id: 4,
+        },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "awdsd", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        {
+          date: "2022.10.03",
+          name: "dvsd",
+          count: 244,
+          distance: 300,
+          id: 4,
+        },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "adafl", count: 244, distance: 300, id: 4 },
+        {
+          date: "2022.10.03",
+          name: "dfl",
+          count: 244,
+          distance: 300,
+          id: 4,
+        },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        {
+          date: "2022.10.03",
+          name: "ssfl",
+          count: 244,
+          distance: 300,
+          id: 4,
+        },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+        { date: "2022.10.03", name: "lll", count: 244, distance: 300, id: 4 },
+      ],
+      rowsPerPage: 10,
+      pageNumber: 1,
+      selectedItem: "",
+      selectedType: "",
+      num: null,
+    };
+  },
+  computed: {
+    pages() {
+      return Math.ceil(this.data.length / this.rowsPerPage);
+    },
+    pagination() {
+      let firstIndex = this.pageNumber - 1;
+      let lastIndex = firstIndex + this.rowsPerPage;
+      return this.data.slice(firstIndex, lastIndex);
+    },
+  },
+  methods: {
+    changePage(page) {
+      this.pageNumber = page;
+    },
+    sortByMore() {
+      const number = this.num;
+      if (
+        this.selectedItem === "Количество" &&
+        this.selectedType === "Больше"
+      ) {
+        this.data.sort(function (a) {
+          return a.count < number ? 1 : -1;
+        });
+      }
+    },
+  },
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.table-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+.table-border {
+  border: thick double #808080;
+  border-collapse: collapse;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+td {
+  border: thick double #808080;
+  border-collapse: collapse;
 }
-a {
-  color: #42b983;
+div {
+  margin: 5px;
+}
+
+.btn {
+  display: inline;
+  text-decoration: none;
+  border: solid #808080 2px;
+  padding: 10px;
+  margin: 10px;
+}
+.btnActive {
+  background-color: black;
+  color: white;
+}
+.btn:hover {
+  background-color: black;
+  color: white;
+  transition: 0.5s;
 }
 </style>
