@@ -1,7 +1,7 @@
 <template>
   <div class="table-center">
     <select v-model="selectedItem">
-      <option v-for="title in titles.slice(1, titles.length)" :key="title.id">
+      <option v-for="title in titles.slice(1, titles.length)" :key="title">
         {{ title.name }}
       </option>
     </select>
@@ -10,7 +10,7 @@
         {{ sortType.name }}
       </option>
     </select>
-    <input v-model="num" @input="sortByMore" type="number" />
+    <input v-model="num" @input="sortBy" type="number" />
     <table class="table-border">
       <thead class="table-border">
         <th class="table-border" v-for="title in titles" :key="title.id">
@@ -18,7 +18,7 @@
         </th>
       </thead>
       <tbody>
-        <tr class="table-border" v-for="elem in pagination" :key="elem.id">
+        <tr class="table-border" v-for="elem in pagination" :key="elem">
           <td>
             <div>{{ elem.date }}</div>
           </td>
@@ -58,10 +58,10 @@ export default {
         { name: "Расстояние", id: 4 },
       ],
       sortTypes: [
-        { name: "Равно", id: 1 },
-        { name: "Больше", id: 2 },
-        { name: "Меньше", id: 3 },
-        { name: "Содержит", id: 4 },
+        { name: "Равно", id: 5 },
+        { name: "Больше", id: 6 },
+        { name: "Меньше", id: 7 },
+        { name: "Содержит", id: 8 },
       ],
       data: [
         { date: "2022.10.03", name: "fff", count: 3, distance: 4564, id: 1 },
@@ -135,34 +135,59 @@ export default {
       pageNumber: 1,
       selectedItem: "",
       selectedType: "",
-      num: null,
+      num: "",
+      filteredData: [],
     };
   },
   computed: {
     pages() {
-      return Math.ceil(this.data.length / this.rowsPerPage);
+      if (this.num === "") {
+        return Math.ceil(this.data.length / this.rowsPerPage);
+      }
+      return Math.ceil(this.filteredData.length / this.rowsPerPage);
     },
     pagination() {
       let firstIndex = this.pageNumber - 1;
       let lastIndex = firstIndex + this.rowsPerPage;
-      return this.data.slice(firstIndex, lastIndex);
+      if (this.num === "") {
+        return this.data.slice(firstIndex, lastIndex);
+      }
+      const result = this.filteredData.slice(firstIndex, lastIndex);
+      return result;
     },
   },
   methods: {
     changePage(page) {
       this.pageNumber = page;
     },
-    sortByMore() {
+    sortBy() {
       const number = this.num;
       if (
         this.selectedItem === "Количество" &&
         this.selectedType === "Больше"
       ) {
-        this.data.sort(function (a) {
-          return a.count < number ? 1 : -1;
-        });
+        this.filteredData = this.data.filter((item) => item.count > number);
+      }
+      if (
+        this.selectedItem === "Расстояние" &&
+        this.selectedType === "Больше"
+      ) {
+        this.filteredData = this.data.filter((item) => item.distance > number);
+      }
+      if (
+        this.selectedItem === "Количество" &&
+        this.selectedType === "Меньше"
+      ) {
+        this.filteredData = this.data.filter((item) => item.count < number);
+      }
+      if (
+        this.selectedItem === "Расстояние" &&
+        this.selectedType === "Меньше"
+      ) {
+        this.filteredData = this.data.filter((item) => item.distance < number);
       }
     },
+    doesContain() {},
   },
 };
 </script>
