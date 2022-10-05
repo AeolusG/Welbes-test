@@ -1,16 +1,22 @@
 <template>
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <MainTable />
+  <TablePagination />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
+import MainTable from "./components/MainTable.vue";
+import TablePagination from "./components/Pagination.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    MainTable,
+    TablePagination,
+  },
+};
 </script>
 
 <style>
