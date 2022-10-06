@@ -1001,7 +1001,7 @@ export default {
   //   ];
   // },
   mounted() {
-    fetch("https://my-json-server.typicode.com/AeolusG/SPA-on-Vue/users")
+    fetch("https://my-json-server.typicode.com/AeolusG/Welbex-test/items")
       .then((result) => result.json())
       .then((response) => (this.tableData = response));
   },
