@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import fetchData from "/home/olya/rabstol/Welbex-test/src/api/getData.js";
+import fetchData from "../api/index.js";
 
 const store = createStore({
   actions: {

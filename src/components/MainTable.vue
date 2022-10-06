@@ -2,13 +2,14 @@
   <div class="center">
     <div class="row g-0 m-3">
       <div class="col-3">
-        <select class="form-select" v-model="selectedColumn">
+        <select class="form-select" v-model="selectedFilterColumn">
           <option value="">Колонки</option>
-          <option v-for="column in giveColumnsToFilter" :key="column">
+          <option v-for="column in columnsToFilter" :key="column">
             {{ column.name }}
           </option>
         </select>
       </div>
+
       <div class="col-3">
         <select class="form-select" v-model="selectedFilterValue">
           <option value="">Критерий</option>
@@ -17,6 +18,7 @@
           </option>
         </select>
       </div>
+
       <div class="col-4">
         <input class="form-control" v-model="searchString" />
       </div>
@@ -27,6 +29,7 @@
         </button>
       </div>
     </div>
+
     <table v-if="filterData.length > 0" class="table center">
       <thead>
         <th v-for="column in columns" :key="column.id">
@@ -50,6 +53,7 @@
         </tr>
       </tbody>
     </table>
+
     <div v-else-if="searchString !== ''">
       <div>По вашему запросу ничего не найдено</div>
       <img
@@ -72,6 +76,7 @@
 </template>
 
 <script>
+import { COLUMNS_NAME, FILTER_VALUES } from "../constants/constants";
 import { mapActions } from "vuex";
 
 export default {
@@ -80,18 +85,18 @@ export default {
   data() {
     return {
       columns: [
-        { name: "Дата", id: 1 },
-        { name: "Название", id: 2 },
-        { name: "Количество", id: 3 },
-        { name: "Расстояние", id: 4 },
+        { name: COLUMNS_NAME.DATE, id: 2 },
+        { name: COLUMNS_NAME.NAME, id: 1 },
+        { name: COLUMNS_NAME.COUNT, id: 3 },
+        { name: COLUMNS_NAME.DISTANCE, id: 4 },
       ],
       filtersValues: [
-        { name: "Равно", id: 5 },
-        { name: "Больше", id: 6 },
-        { name: "Меньше", id: 7 },
-        { name: "Содержит", id: 8 },
+        { name: FILTER_VALUES.EQUALS, id: 5 },
+        { name: FILTER_VALUES.MORE, id: 6 },
+        { name: FILTER_VALUES.LESS, id: 7 },
+        { name: FILTER_VALUES.CONTAINS, id: 8 },
       ],
-      selectedColumn: "",
+      selectedFilterColumn: "",
       selectedFilterValue: "",
       searchString: "",
       tableData: [],
@@ -111,15 +116,15 @@ export default {
       let data = this.tableData;
 
       if (
-        this.selectedColumn === "Количество" &&
-        this.selectedFilterValue === "Больше"
+        this.selectedFilterColumn === COLUMNS_NAME.COUNT &&
+        this.selectedFilterValue === FILTER_VALUES.MORE
       ) {
         data = this.tableData.filter((item) => item.count > this.searchString);
       }
 
       if (
-        this.selectedColumn === "Расстояние" &&
-        this.selectedFilterValue === "Больше"
+        this.selectedFilterColumn === COLUMNS_NAME.DISTANCE &&
+        this.selectedFilterValue === FILTER_VALUES.MORE
       ) {
         data = this.tableData.filter(
           (item) => item.distance > this.searchString
@@ -127,16 +132,16 @@ export default {
       }
 
       if (
-        this.selectedColumn === "Количество" &&
-        this.selectedFilterValue === "Меньше" &&
+        this.selectedFilterColumn === COLUMNS_NAME.COUNT &&
+        this.selectedFilterValue === FILTER_VALUES.LESS &&
         this.searchString !== ""
       ) {
         data = this.tableData.filter((item) => item.count < this.searchString);
       }
 
       if (
-        this.selectedColumn === "Расстояние" &&
-        this.selectedFilterValue === "Меньше" &&
+        this.selectedFilterColumn === COLUMNS_NAME.DISTANCE &&
+        this.selectedFilterValue === FILTER_VALUES.LESS &&
         this.searchString !== ""
       ) {
         data = this.tableData.filter(
@@ -145,8 +150,8 @@ export default {
       }
 
       if (
-        this.selectedColumn === "Расстояние" &&
-        this.selectedFilterValue === "Равно" &&
+        this.selectedFilterColumn === COLUMNS_NAME.DISTANCE &&
+        this.selectedFilterValue === FILTER_VALUES.EQUALS &&
         this.searchString !== ""
       ) {
         data = this.tableData.filter(
@@ -155,8 +160,8 @@ export default {
       }
 
       if (
-        this.selectedColumn === "Количество" &&
-        this.selectedFilterValue === "Равно" &&
+        this.selectedFilterColumn === COLUMNS_NAME.COUNT &&
+        this.selectedFilterValue === FILTER_VALUES.EQUALS &&
         this.searchString !== ""
       ) {
         data = this.tableData.filter(
@@ -165,8 +170,8 @@ export default {
       }
 
       if (
-        this.selectedColumn === "Название" &&
-        this.selectedFilterValue === "Содержит"
+        this.selectedFilterColumn === COLUMNS_NAME.NAME &&
+        this.selectedFilterValue === FILTER_VALUES.CONTAINS
       ) {
         data = this.tableData.filter((item) =>
           item.name.includes(this.searchString)
@@ -178,7 +183,7 @@ export default {
       return this.getElementsByPage(data);
     },
 
-    giveColumnsToFilter() {
+    columnsToFilter() {
       return this.columns.slice(1, this.columns.length);
     },
   },
@@ -187,7 +192,7 @@ export default {
     ...mapActions(["getData"]),
 
     reset() {
-      this.selectedColumn = "";
+      this.selectedFilterColumn = "";
       this.selectedFilterValue = "";
       this.searchString = "";
     },
