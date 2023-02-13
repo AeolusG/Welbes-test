@@ -14,6 +14,9 @@
 - Bootstrap (вся логика прописана вручную, из фреймворка взяты только готовые классы)
 - JSONPlaceholder
 
+Ссылка на GitHub Pages:
+https://github.com/AeolusG/Welbex-test
+
 ## Project setup
 ```
 npm install
